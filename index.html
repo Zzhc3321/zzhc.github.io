@@ -25,20 +25,21 @@
         <div id="index" >                                           <!-- Index starts here -->
             <div class="container">
                 <div class="row home">
-                    <div id = "index_left" class="col-md-6 left" >
+                    <div id = "index_left" class="col-md-6 left" style="width: 25%">
                         <img class="img-responsive img-rabbit1" src="assets/images/xhr2.png">
+
                     </div>
                     <div id = "index_right" class="col-md-6 text-center right">
                         <div class="logo">
-                            <img src="assets/images/logo.jpg" style="width:111px;">
+                            <img src="assets/images/logo.jpg" style="width:111px;border-radius:100%;">
                             <h4>I am zzhc</h4>
                         </div>
                         <p class="home-description">
-                            你好，我是<a style="color: orange">正在缓冲</a>。<br>我对设计和开发充满热情。<br>我热衷我所<i class="fa fa-heartbeat" aria-hidden="true">爱</i>的一切。
+                            你好，我是<a style="color: orange">正在缓冲</a>。<br>我对设计和开发充满<i class="fa fa-magic" aria-hidden="true">热情</i>。<br>我热衷我所<i class="fa fa-heartbeat" aria-hidden="true">爱</i>的一切。
                         </p>
                         <div class="btn-group-vertical custom_btn animated slideinright">
                             <div id="about" class="btn btn-rabbit">关于</div>
-                            <div id="work" class="btn btn-rabbit">tianchi（二手车预测）</div>
+                            <div id="work" class="btn btn-rabbit">lasso-linear（二手车预测）</div>
                             <div id="contact" class="btn btn-rabbit">数据统计与分析(随机梯度下降)</div>
                             <div id="zzjz" class="btn btn-rabbit">正在加载中......</div>
                         </div>      
@@ -109,9 +110,9 @@
         </div>                                                      <!-- index ends here -->
 
         <div id="about_scroll" class="pages ">                      <!-- about strats here  -->
-            <div class="container main">
+            <div class="container">
                 <div class="row">
-                    <div class="col-md-6 left" id="about_left">
+                    <div class="col-md-6 left" id="about_left" >
                         <img class="img-responsive img-rabbit2" src="assets/images/xhr3.png">
                     </div>
 
@@ -1052,20 +1053,395 @@ LinearRegression_model_MSE: 0.09487481770957773
         <div id="contact_scroll" class="pages">                             <!-- Contact starts here -->
                        <div class="container">
                 <div class="row">
-                    <div class="col-md-4" id="work_left" style="position:fixed; width: 20%">
+                    <div class="col-md-4" id="contact_left" style="position:fixed; width: 20%">
 <!--                        <img class="img-responsive img-rabbit2" src="assets/images/xhr4.jpg">-->
                         <img class="img-responsive img-rabbit2" src="assets/images/xhr.png">
                         <img class="img-responsive img-rabbit2" src="assets/images/xhr3.png">
                         <img class="img-responsive img-rabbit2" src="assets/images/xhr2.png">
                     </div>
 
-                    <div class="col-md-8" id="work_right" style="border: #1ab7ea;border-style: solid;float: right;width: 75%;background-color: white">
+                    <div class="col-md-8" id="contact_right" style="border: #1ab7ea;border-style: solid;float: right;width: 75%;background-color: white">
 						<a href="#index" class="btn btn-rabbit back"> <i class="fa fa-angle-left" aria-hidden="true"></i>返回首页</a>
-                        <div id="watermark">
+                        <div id="contactmark">
                             <h2 class="page-title" text-center>随机梯度下降</h2>
                             <div class="marker">梯度</div>
                         </div>
-
+<section id="logistic-regression" class="cell markdown" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:37:07.114000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:37:07.123000&quot;}" data-collapsed="true">
+<h1>Logistic Regression</h1>
+</section>
+<section id="假设某一课程成绩的是由多个因素决定其中平时成绩和期末成绩两部分起到决定性作用只有满足条件才能得到优秀" class="cell markdown">
+<h1>假设某一课程成绩的是由多个因素决定，其中平时成绩和期末成绩两部分起到决定性作用，只有满足条件，才能得到优秀</h1>
+</section>
+<div class="cell code" data-execution_count="57" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:41:52.726000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:41:59.715000&quot;}" data-pycharm="{&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy.stats <span class="im">import</span> norm</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> scipy <span class="im">import</span> stats</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> random</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> warnings</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>warnings.filterwarnings(<span class="st">&#39;ignore&#39;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">&#39;font.sans-serif&#39;</span>] <span class="op">=</span> [<span class="st">&#39;SimHei&#39;</span>]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>plt.rcParams[<span class="st">&#39;axes.unicode_minus&#39;</span>] <span class="op">=</span> <span class="va">False</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span></code></pre></div>
+</div>
+<div class="cell markdown" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:43:37.635000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:43:37.650000&quot;}" data-pycharm="{&quot;name&quot;:&quot;#%% md\n&quot;}">
+<p>先随机生成一些数</p>
+</div>
+<div class="cell code" data-execution_count="58">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>lower, upper <span class="op">=</span> <span class="dv">0</span>, <span class="dv">100</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mu1, sigma1 <span class="op">=</span> <span class="dv">90</span>, <span class="dv">10</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mu2, sigma2 <span class="op">=</span> <span class="dv">85</span>, <span class="dv">10</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>X1 <span class="op">=</span> stats.truncnorm(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    (lower <span class="op">-</span> mu1) <span class="op">/</span> sigma1, (upper <span class="op">-</span> mu1) <span class="op">/</span> sigma1, loc<span class="op">=</span>mu1, scale<span class="op">=</span>sigma1)<span class="co">#有区间限制的随机数</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>X2 <span class="op">=</span> stats.truncnorm(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    (lower <span class="op">-</span> mu2) <span class="op">/</span> sigma2, (upper <span class="op">-</span> mu2) <span class="op">/</span> sigma2, loc<span class="op">=</span>mu2, scale<span class="op">=</span>sigma2)<span class="co">#有区间限制的随机数</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>x1 <span class="op">=</span> X1.rvs(<span class="dv">1000</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>x2 <span class="op">=</span> X2.rvs(<span class="dv">1000</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> np.zeros(<span class="dv">1000</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(x1)):</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fl">0.4</span><span class="op">*</span>x1[i]<span class="op">+</span><span class="fl">0.6</span><span class="op">*</span>x2[i])<span class="op">+</span>random.randint(<span class="dv">0</span>,<span class="dv">5</span>)<span class="op">&gt;</span><span class="dv">92</span>:</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>        y[i] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x2[i]<span class="op">&gt;</span><span class="dv">98</span> <span class="kw">or</span> x1[i]<span class="op">&gt;</span><span class="dv">98</span>:</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>        y[i] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x2[i]<span class="op">&lt;</span><span class="dv">60</span> <span class="kw">or</span> x1[i]<span class="op">&lt;</span><span class="dv">60</span>:</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>        y[i] <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> []</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>c <span class="op">=</span> <span class="bu">zip</span>(x1,x2)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> np.array(<span class="bu">list</span>(c))</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>X[:,<span class="dv">1</span>] <span class="op">=</span> ((X[:,<span class="dv">1</span>] <span class="op">-</span> np.<span class="bu">min</span>(X[:,<span class="dv">1</span>])) <span class="op">/</span> (np.<span class="bu">max</span>(X[:,<span class="dv">1</span>]) <span class="op">-</span> np.<span class="bu">min</span>(X[:,<span class="dv">1</span>])))</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>pdData <span class="op">=</span> pd.DataFrame(X,columns<span class="op">=</span>[<span class="st">&#39;x1&#39;</span>,<span class="st">&#39;x2&#39;</span>])</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>pdData.insert(<span class="bu">len</span>(X[<span class="dv">0</span>]),<span class="st">&#39;Y&#39;</span>,y)</span></code></pre></div>
+</div>
+<div class="cell code" data-execution_count="59" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:41:59.776000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:41:59.785000&quot;}">
+<div class="sourceCode" id="cb3"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pdData.shape</span></code></pre></div>
+<div class="output execute_result" data-execution_count="59">
+<pre><code>(1000, 3)</code></pre>
+</div>
+</div>
+<div class="cell code" data-execution_count="60" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:41:59.790000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.260000&quot;}">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>positive <span class="op">=</span> pdData[pdData[<span class="st">&#39;Y&#39;</span>] <span class="op">==</span> <span class="dv">1</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>negative <span class="op">=</span> pdData[pdData[<span class="st">&#39;Y&#39;</span>] <span class="op">==</span> <span class="dv">0</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">10</span>,<span class="dv">5</span>))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>ax.scatter(positive[<span class="st">&#39;x1&#39;</span>], positive[<span class="st">&#39;x2&#39;</span>], s<span class="op">=</span><span class="dv">30</span>, c<span class="op">=</span><span class="st">&#39;b&#39;</span>, marker<span class="op">=</span><span class="st">&#39;o&#39;</span>, label<span class="op">=</span><span class="st">&#39;获得优秀&#39;</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>ax.scatter(negative[<span class="st">&#39;x1&#39;</span>], negative[<span class="st">&#39;x2&#39;</span>], s<span class="op">=</span><span class="dv">30</span>, c<span class="op">=</span><span class="st">&#39;r&#39;</span>, marker<span class="op">=</span><span class="st">&#39;x&#39;</span>, label<span class="op">=</span><span class="st">&#39;为获得优秀&#39;</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>ax.legend()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">&#39;平时成绩&#39;</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>ax.set_ylabel(<span class="st">&#39;期末成绩&#39;</span>)</span></code></pre></div>
+<div class="output execute_result" data-execution_count="60">
+<pre><code>Text(0, 0.5, &#39;期末成绩&#39;)</code></pre>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/01.jpg" /></p>
+</div>
+</div>
+<div class="cell code" data-execution_count="61" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.586000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.649000&quot;}" data-pycharm="{&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb7"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>pdData.insert(<span class="dv">0</span>, <span class="st">&#39;Ones&#39;</span>, <span class="dv">1</span>) </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>orig_data <span class="op">=</span> pdData.as_matrix() </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> orig_data.shape[<span class="dv">1</span>]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> orig_data[:,<span class="dv">0</span>:cols<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> orig_data[:,cols<span class="op">-</span><span class="dv">1</span>:cols]</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> np.zeros([<span class="dv">1</span>, <span class="dv">3</span>])</span></code></pre></div>
+</div>
+<div class="cell code" data-execution_count="62" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.652000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.683000&quot;}" data-pycharm="{&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>X.shape, y.shape, theta.shape</span></code></pre></div>
+<div class="output execute_result" data-execution_count="62">
+<pre><code>((1000, 3), (1000, 1), (1, 3))</code></pre>
+</div>
+</div>
+<div class="cell code" data-execution_count="63" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:36.333000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:40.439000&quot;}" data-pycharm="{&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> preprocessing <span class="im">as</span> pp</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>scaled_data <span class="op">=</span> orig_data.copy()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>scaled_data[:,<span class="dv">1</span>:<span class="dv">3</span>] <span class="op">=</span> pp.scale(orig_data[:,<span class="dv">1</span>:<span class="dv">3</span>])</span></code></pre></div>
+</div>
+<section id="the-logistic-regression" class="cell markdown">
+<h2>The logistic regression</h2>
+</section>
+<div class="cell markdown" data-pycharm="{&quot;name&quot;:&quot;#%% md\n&quot;}">
+<p>建立logistic分类器（因为有两维特征，所以目标求解出三个参数 $\theta_0 \theta_1 \theta_2 $）</p>
+<p>sigmoid : 映射到概率的函数</p>
+<p>model : 返回预测结果</p>
+<p>predict: 预测结果（根据阈值判断）</p>
+<p>loss : 计算损失</p>
+<p>reset: 打乱数据</p>
+<p>gradient : 计算梯度</p>
+<p>descent : 参数更新</p>
+<p>accuracy: 计算精度并绘制confusion matrix图</p>
+</div>
+<section id="sigmoid-函数" class="cell markdown" data-pycharm="{&quot;name&quot;:&quot;#%% md\n&quot;}">
+<h3><code>sigmoid</code> 函数</h3>
+<p><span class="math display">$$
+g(z) = \frac{1}{1+e^{-z}}
+$$</span></p>
+</section>
+<div class="cell code" data-execution_count="64" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.263000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.268000&quot;}" data-pycharm="{&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sigmoid(z):</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="dv">1</span> <span class="op">/</span> (<span class="dv">1</span> <span class="op">+</span> np.exp(<span class="op">-</span>z))</span></code></pre></div>
+</div>
+<div class="cell markdown" data-pycharm="{&quot;name&quot;:&quot;#%% md\n&quot;}">
+<p><span class="math display">$$
+\begin{array}{ccc}
+\begin{pmatrix}\theta_{0} &amp; \theta_{1} &amp; \theta_{2}\end{pmatrix} &amp; \times &amp; \begin{pmatrix}1\\
+x_{1}\\
+x_{2}
+\end{pmatrix}\end{array}=\theta_{0}+\theta_{1}x_{1}+\theta_{2}x_{2}
+$$</span></p>
+</div>
+<div class="cell code" data-execution_count="65" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.576000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.581000&quot;}" data-pycharm="{&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb12"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> model(X, theta):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> sigmoid(np.dot(X, theta.T))</span></code></pre></div>
+</div>
+<section id="损失函数" class="cell markdown" data-pycharm="{&quot;name&quot;:&quot;#%% md\n&quot;}">
+<h3>损失函数</h3>
+<p>将对数似然函数去负号</p>
+<p><span class="math display"><em>D</em>(<em>h</em><sub><em>θ</em></sub>(<em>x</em>), <em>y</em>) =  − <em>y</em>log (<em>h</em><sub><em>θ</em></sub>(<em>x</em>)) − (1 − <em>y</em>)log (1 − <em>h</em><sub><em>θ</em></sub>(<em>x</em>))</span> 求平均损失 <span class="math display">$$
+J(\theta)=\frac{1}{n}\sum_{i=1}^{n} D(h_\theta(x_i), y_i)
+$$</span></p>
+</section>
+<div class="cell code" data-execution_count="66" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.686000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.712000&quot;}">
+<div class="sourceCode" id="cb13"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> loss(X, y, theta):</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    d1 <span class="op">=</span> np.multiply(<span class="op">-</span>y, np.log(model(X, theta)))</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    d2 <span class="op">=</span> np.multiply(<span class="dv">1</span> <span class="op">-</span> y, np.log(<span class="dv">1</span> <span class="op">-</span> model(X, theta)))</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.<span class="bu">sum</span>(d1 <span class="op">-</span> d2) <span class="op">/</span> (<span class="bu">len</span>(X))</span></code></pre></div>
+</div>
+<section id="计算梯度" class="cell markdown" data-pycharm="{&quot;name&quot;:&quot;#%% md\n&quot;}">
+<h3>计算梯度</h3>
+<p><span class="math display">$$
+\frac{\partial J}{\partial \theta_j}=-\frac{1}{m}\sum_{i=1}^n (y_i - h_\theta (x_i))x_{ij}
+$$</span></p>
+</section>
+<div class="cell code" data-execution_count="67" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.747000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.769000&quot;}">
+<div class="sourceCode" id="cb14"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gradient(X, y, theta):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    grad <span class="op">=</span> np.zeros(theta.shape)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    err <span class="op">=</span> (model(X, theta)<span class="op">-</span> y).ravel()</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(theta.ravel())):</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>        ej <span class="op">=</span> np.multiply(err, X[:,j])</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>        grad[<span class="dv">0</span>, j] <span class="op">=</span> np.<span class="bu">sum</span>(ej) <span class="op">/</span> <span class="bu">len</span>(X)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> grad</span></code></pre></div>
+</div>
+<div class="cell code" data-execution_count="68" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.833000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.858000&quot;}">
+<div class="sourceCode" id="cb15"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reset(data):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    np.random.shuffle(data)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    cols <span class="op">=</span> data.shape[<span class="dv">1</span>]</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> data[:, <span class="dv">0</span>:cols<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> data[:, cols<span class="op">-</span><span class="dv">1</span>:]</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X, y</span></code></pre></div>
+</div>
+<section id="gradient-descent" class="cell markdown">
+<h3>Gradient descent</h3>
+</section>
+<div class="cell code" data-execution_count="69" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.862000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.918000&quot;}" data-cell_style="center">
+<div class="sourceCode" id="cb16"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> descent(data, theta, N,batchSize,  alpha):</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    i <span class="op">=</span> <span class="dv">0</span> <span class="co"># 迭代次数</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    k <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    X, y <span class="op">=</span> reset(data)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    grad <span class="op">=</span> np.zeros(theta.shape) <span class="co"># 梯度</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    losss <span class="op">=</span> [loss(X, y, theta)] <span class="co"># 损失</span></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(data[:,<span class="dv">1</span>])</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="va">True</span>:</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>        grad <span class="op">=</span> gradient(X[k:k<span class="op">+</span>batchSize], y[k:k<span class="op">+</span>batchSize], theta)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>        k <span class="op">+=</span> batchSize</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> k <span class="op">&gt;=</span> n: </span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>            k <span class="op">=</span> <span class="dv">0</span> </span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>            X, y <span class="op">=</span> reset(data)</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>        theta <span class="op">=</span> theta <span class="op">-</span> alpha<span class="op">*</span>grad <span class="co"># 参数更新</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        losss.append(loss(X, y, theta)) <span class="co"># 计算新的损失</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        i <span class="op">+=</span> <span class="dv">1</span> </span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> i<span class="op">&gt;</span>N: <span class="cf">break</span></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> theta, i<span class="op">-</span><span class="dv">1</span>, losss, grad</span></code></pre></div>
+</div>
+<div class="cell code" data-execution_count="70" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.922000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:00.951000&quot;}">
+<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> drawpic(data,theta, N,batchSize, alpha):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    n <span class="op">=</span> <span class="bu">len</span>(data[:,<span class="dv">1</span>])</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    theta, <span class="bu">iter</span>, costs, grad <span class="op">=</span> descent(data, theta, N,batchSize, alpha)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> batchSize<span class="op">==</span>n: strDescType <span class="op">=</span> <span class="st">&quot;批量&quot;</span> <span class="op">+</span> <span class="st">&#39; alpha is </span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(alpha) <span class="op">+</span> <span class="st">&#39; loss is </span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(costs[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> batchSize<span class="op">==</span><span class="dv">1</span>:  strDescType <span class="op">=</span> <span class="st">&quot;随机梯度&quot;</span> <span class="op">+</span> <span class="st">&#39; alpha is </span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(alpha) <span class="op">+</span> <span class="st">&#39; loss is </span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(costs[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>: strDescType <span class="op">=</span> <span class="st">&quot;小批量 (</span><span class="sc">{}</span><span class="st">)&quot;</span>.<span class="bu">format</span>(batchSize) <span class="op">+</span>  <span class="st">&#39; alpha is </span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(alpha) <span class="op">+</span><span class="st">&#39; loss is </span><span class="sc">{}</span><span class="st">&#39;</span>.<span class="bu">format</span>(costs[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">4</span>))</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    ax.plot(np.arange(<span class="bu">len</span>(costs)), costs, <span class="st">&#39;r&#39;</span>)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">&#39;次数&#39;</span>)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>    ax.set_ylabel(<span class="st">&#39;损失&#39;</span>)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>    ax.set_title(strDescType)</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> theta</span></code></pre></div>
+</div>
+<section id="不同策略" class="cell markdown">
+<h3>不同策略</h3>
+</section>
+<section id="迭代次数不变改变学习率-设定学习率" class="cell markdown">
+<h4>(迭代次数不变，改变学习率) 设定学习率</h4>
+</section>
+<div class="cell code" data-execution_count="71">
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">1</span>,<span class="dv">1</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">1</span>,<span class="fl">0.1</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">1</span>,<span class="fl">0.01</span>)</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">1</span>,<span class="fl">0.001</span>)</span></code></pre></div>
+<div class="output execute_result" data-execution_count="71">
+<pre><code>array([[-0.90882123,  0.88131039,  1.20955307]])</code></pre>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/02.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/03.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/04.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/05.png" /></p>
+</div>
+</div>
+<section id="学习率不变改变迭代次数-很直观-迭代次数越多效果损失越小" class="cell markdown" data-pycharm="{&quot;name&quot;:&quot;#%% md\n&quot;}">
+<h4>(学习率不变，改变迭代次数) 很直观 迭代次数越多效果损失越小</h4>
+</section>
+<div class="cell code" data-execution_count="72" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:00.953000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:02.222000&quot;}" data-pycharm="{&quot;is_executing&quot;:true,&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb20"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">100</span>,<span class="dv">1</span>,<span class="fl">0.1</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">1000</span>,<span class="dv">1</span>,<span class="fl">0.1</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">1</span>,<span class="fl">0.1</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">100000</span>,<span class="dv">1</span>,<span class="fl">0.1</span>)</span></code></pre></div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/06.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/07.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/08.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/09.png" /></p>
+</div>
+</div>
+<div class="cell code" data-pycharm="{&quot;is_executing&quot;:true}">
+<div class="sourceCode" id="cb21"><pre class="sourceCode python"><code class="sourceCode python"></code></pre></div>
+</div>
+<section id="对比不同的梯度下降方法" class="cell markdown">
+<h3>对比不同的梯度下降方法</h3>
+</section>
+<section id="对比随机小批量批量-量越损失越小但是所需时间越长并且变化不明显" class="cell markdown" data-pycharm="{&quot;name&quot;:&quot;#%% md\n&quot;}">
+<h3>对比随机，小批量，批量 量越损失越小，但是所需时间越长，并且变化不明显</h3>
+</section>
+<div class="cell code" data-execution_count="73" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:32.052000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:32.786000&quot;}" data-pycharm="{&quot;is_executing&quot;:true,&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb22"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">1</span>,<span class="fl">0.1</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">10</span>,<span class="fl">0.1</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">100</span>,<span class="fl">0.1</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">500</span>,<span class="fl">0.1</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>theta <span class="op">=</span> drawpic(scaled_data,np.array([[<span class="dv">0</span>,<span class="dv">0</span>,<span class="dv">0</span>]]),<span class="dv">10000</span>,<span class="dv">1000</span>,<span class="fl">0.1</span>)</span></code></pre></div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/10.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/11.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/12.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/13.png" /></p>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/14.png" /></p>
+</div>
+</div>
+<section id="精度" class="cell markdown">
+<h2>精度</h2>
+</section>
+<div class="cell code" data-execution_count="74" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:59.699000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:59.703000&quot;}" data-pycharm="{&quot;is_executing&quot;:true}">
+<div class="sourceCode" id="cb23"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predict(X, theta):</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> [<span class="dv">1</span> <span class="cf">if</span> x <span class="op">&gt;=</span> <span class="fl">0.5</span> <span class="cf">else</span> <span class="dv">0</span> <span class="cf">for</span> x <span class="kw">in</span> model(X, theta)]</span></code></pre></div>
+</div>
+<div class="cell code" data-execution_count="75" data-ExecuteTime="{&quot;start_time&quot;:&quot;2016-09-12T22:42:59.706000&quot;,&quot;end_time&quot;:&quot;2016-09-12T22:42:59.760000&quot;}" data-pycharm="{&quot;is_executing&quot;:true,&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb24"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>scaled_X <span class="op">=</span> scaled_data[:, :<span class="dv">3</span>]</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> scaled_data[:, <span class="dv">3</span>]</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>predictions <span class="op">=</span> predict(scaled_X, theta)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>correct <span class="op">=</span> [<span class="dv">1</span> <span class="cf">if</span> ((a <span class="op">==</span> <span class="dv">1</span> <span class="kw">and</span> b <span class="op">==</span> <span class="dv">1</span>) <span class="kw">or</span> (a <span class="op">==</span> <span class="dv">0</span> <span class="kw">and</span> b <span class="op">==</span> <span class="dv">0</span>)) <span class="cf">else</span> <span class="dv">0</span> <span class="cf">for</span> (a, b) <span class="kw">in</span> <span class="bu">zip</span>(predictions, y)]</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>accuracy <span class="op">=</span> (<span class="bu">sum</span>(<span class="bu">map</span>(<span class="bu">int</span>, correct)) <span class="op">/</span> <span class="bu">len</span>(correct))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">&#39;accuracy = </span><span class="sc">{0}</span><span class="st">%&#39;</span>.<span class="bu">format</span>(accuracy<span class="op">*</span><span class="dv">100</span>))</span></code></pre></div>
+<div class="output stream stdout">
+<pre><code>accuracy = 90.4%
+</code></pre>
+</div>
+</div>
+<div class="cell code" data-execution_count="81" data-pycharm="{&quot;is_executing&quot;:true}">
+<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>r1 <span class="op">=</span> confusion_matrix(y, predictions)</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>guess <span class="op">=</span> [<span class="st">&quot;1&quot;</span>,<span class="st">&quot;0&quot;</span>]</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>fact <span class="op">=</span> [ <span class="st">&quot;1&quot;</span>,<span class="st">&quot;0&quot;</span>]</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>classes <span class="op">=</span> <span class="bu">list</span>(<span class="bu">set</span>(fact))</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co"># classes.sort(reverse=True)</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">10</span>))       <span class="co">#设置plt窗口的大小</span></span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a>confusion <span class="op">=</span>r1</span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;confusion&quot;</span>,confusion)</span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>plt.imshow(confusion, cmap<span class="op">=</span>plt.cm.Blues)</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> <span class="bu">range</span>(<span class="bu">len</span>(confusion))</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a>indices2 <span class="op">=</span> <span class="bu">range</span>(<span class="dv">3</span>)</span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a>plt.xticks(indices, classes,rotation<span class="op">=</span><span class="dv">40</span>,fontsize<span class="op">=</span><span class="dv">18</span>)</span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>plt.yticks([<span class="fl">0.00</span>,<span class="fl">1.00</span>], classes,fontsize<span class="op">=</span><span class="dv">18</span>)</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>plt.ylim(<span class="fl">1.5</span> , <span class="op">-</span><span class="fl">0.5</span>)   <span class="co">#设置y的纵坐标的上下限</span></span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">&quot;Confusion matrix&quot;</span>,fontdict<span class="op">=</span>{<span class="st">&#39;weight&#39;</span>:<span class="st">&#39;1&#39;</span>,<span class="st">&#39;size&#39;</span>: <span class="dv">18</span>})</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a><span class="co">#设置color bar的标签大小</span></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a>cb<span class="op">=</span>plt.colorbar()</span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>cb.ax.tick_params(labelsize<span class="op">=</span><span class="dv">18</span>)</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">&#39;Predict label&#39;</span>,fontsize<span class="op">=</span><span class="dv">18</span>)</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">&#39;True label&#39;</span>,fontsize<span class="op">=</span><span class="dv">18</span>)</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">&quot;len(confusion)&quot;</span>,<span class="bu">len</span>(confusion))</span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> first_index <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(confusion)):</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> second_index <span class="kw">in</span> <span class="bu">range</span>(<span class="bu">len</span>(confusion[first_index])):</span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> confusion[first_index][second_index]<span class="op">&gt;</span><span class="dv">200</span>:</span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>            color<span class="op">=</span><span class="st">&quot;w&quot;</span></span>
+<span id="cb26-33"><a href="#cb26-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">else</span>:</span>
+<span id="cb26-34"><a href="#cb26-34" aria-hidden="true" tabindex="-1"></a>            color<span class="op">=</span><span class="st">&quot;black&quot;</span></span>
+<span id="cb26-35"><a href="#cb26-35" aria-hidden="true" tabindex="-1"></a>        plt.text(first_index, second_index, confusion[first_index][second_index],fontsize<span class="op">=</span><span class="dv">18</span>, color <span class="op">=</span> color,verticalalignment<span class="op">=</span><span class="st">&#39;center&#39;</span>,horizontalalignment<span class="op">=</span><span class="st">&#39;center&#39;</span>,)</span>
+<span id="cb26-36"><a href="#cb26-36" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb26-37"><a href="#cb26-37" aria-hidden="true" tabindex="-1"></a></span></code></pre></div>
+<div class="output stream stdout">
+<pre><code>confusion [[657  41]
+ [ 55 247]]
+len(confusion) 2
+</code></pre>
+</div>
+<div class="output display_data">
+<p><img src="assets/images/tdxj/15.png" /></p>
+</div>
+</div>
+<div class="cell code" data-pycharm="{&quot;is_executing&quot;:true,&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"></code></pre></div>
+</div>
+<div class="cell code" data-pycharm="{&quot;is_executing&quot;:true}">
+<div class="sourceCode" id="cb29"><pre class="sourceCode python"><code class="sourceCode python"></code></pre></div>
+</div>
+<div class="cell code" data-pycharm="{&quot;is_executing&quot;:true,&quot;name&quot;:&quot;#%%\n&quot;}">
+<div class="sourceCode" id="cb30"><pre class="sourceCode python"><code class="sourceCode python"></code></pre></div>
+</div>
 
 
                     </div>
@@ -1081,7 +1457,7 @@ LinearRegression_model_MSE: 0.09487481770957773
                 <div class="container bottom">
                     <div class="row">
                         <div class="col-sm-12">
-                            <p>Made with <i class="fa fa-heartbeat" aria-hidden="true"></i> by <a href="#">Themewagon</a> More Templates <a href="http://www.youtiy.com/" target="_blank" title="正在缓冲的博客">正在缓冲的博客</a> - Collect from <a href="#" title="blog" target="_blank">blog</a></p>
+                            <p>Made with <i class="fa fa-heartbeat" aria-hidden="true"></i> by <a href="#">Themewagon</a> More Templates <a href="#" target="_blank" title="正在缓冲的博客">正在缓冲的博客</a> - Collect from <a href="#" title="blog" target="_blank">blog</a></p>
                         </div>
                     </div>
                 </div>
